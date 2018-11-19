@@ -1,0 +1,36 @@
+    最近公司项目的一些网页需要兼容ie6，于是开始查找兼容ie6的插件，最后发现bootstrap（v2版本）+bsie（为了兼容ie6）+bootstrap-paginator（兼容ie6的分页插件）的组合还不错，为了以后遇到这种需求的时候能够快速解决，记录一下。
+    下载地址：
+    （1）bootstrap:（版本 v2.2.1）
+     中文官网：https://v2.bootcss.com/
+     下载地址：http://getbootstrap.com/2.3.2/assets/bootstrap.zip
+              为了防止v2版本以后被弃用，特上传到有道一份以供下载：http://note.youdao.com/noteshare?id=2cb9b14de480209dbd52a6ad827b8f1c
+    （2）bsie
+     官网：http://www.bootcss.com/p/bsie/
+     下载地址：https://github.com/ddouble/bsie/zipball/master
+              为了防止以后被弃用，特上传到有道一份以供下载：http://note.youdao.com/noteshare?id=48604b54ae3e2623f1437505a9f5d8e4
+    （3）bootstrap-paginator（版本v0.5）
+     git地址：https://github.com/lyonlai/bootstrap-paginator
+     下载地址：http://plugins.jquery.com/bootstrap-paginator/
+              为了防止以后被弃用，特上传到有道一份以供下载：http://note.youdao.com/noteshare?id=2ea47c9b4dd854d91c8c82cb0f7bc6cf
+     （4）json2（解决ie6不能使用json问题）
+     下载及教程：https://www.cnblogs.com/duanhuajian/p/3392856.html
+     （5）jquery（版本v1.7.2）
+     
+     ---------------------------------------------------------------------------------------------------------------------------
+    开始使用：
+    1引入css文件：（需要依据css文件具体存放的位置）
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css">
+    <!--[if lte IE 6]>
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap-ie6.min.css">
+    <![endif]-->
+    <!--[if lte IE 7]>
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/ie.css">
+    <![endif]-->
+    2引入js文件：（需要依据js文件具体存放的位置）
+    <script type="text/javascript" src="bootstrap/js/json2.js"></script>
+    <script type="text/javascript" src="bootstrap/js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap-ie.js"></script>
+     
+    
+     
