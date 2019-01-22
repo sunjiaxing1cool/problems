@@ -1,0 +1,198 @@
+1：需求描述：
+柱状图每根柱子，都有背景，背景带边框
+2：未解决问题：背景边框不居中
+3：遇到的坑：
+一开始未注意到echarts版本是2，一直使用3的配置，之前的配置都好用，所以一直以为是3版本（^/\^）
+4:解决思路：
+多加一系列数据，值与坐标轴最大值相同，再通过设置barGap: '-100%'，将两个系列柱子重合，实现背景效果，
+鼠标悬浮时默认显示无边框，所以还要设置悬浮效果和普通效果一致
+之前看网上的实现这种效果，最大值一般都是设置了一个比较大的值，通常比获取的数据要大，但是因为，本图表取值从个位数到万以上都有，所以，不能通过直接设置默认最大值，需要动态获取坐标轴刻度的最大值。
+获取y轴刻度最大值的语句为，适用于echarts2：myChart.getModel().getComponent('yAxis').axis.scale._extent[1]
+5：完整代码如下，data为ajax动态获取的数据，data.rows为数据
+function loadChart_offnet_user(data) {
+        var month = []; // 月份
+        var offnetUser = []; // 离网用户数
+        var offnetRate = []; // 离网率
+        var dataShadow = [] // 阴影数据
+        var maxData = 0;
+        var rows;
+        if (data != undefined && data != null) {
+            rows = data.rows;
+        } else {
+            return;
+        }
+        if (rows != null && rows.length > 0) {
+            for (var i = 0; i < rows.length; i++) {
+                var pt_month = rows[i]["PT_MONTH"];
+                var y_lw_cnt = parseInt(rows[i]["Y_LW_CNT"]); // 离网用户数
+                var lw_rate = rows[i]["LW_RATE"]; // 离网率
+                var pt_m = pt_month.substr(4, 6);
+                month.push(pt_m + "月");
+                offnetUser.push(y_lw_cnt);
+                offnetRate.push(lw_rate);
+            }
+        }
+        var myChart = echarts.init(document.getElementById('offnet_user'));
+        var option = {
+            tooltip: {
+                trigger: 'axis',
+                formatter:'{a1}:{c1}<br>{a2}:{c2}'
+            },
+            calculable: true,
+            legend: {
+                itemWidth: 14,
+                itemHeight: 5,
+                itemGap: 13,
+                right: '4%',
+                data: ['离网用户数', '离网率'],
+                textStyle: {
+                    color: '#ffffff'
+                }
+            },
+            grid: {
+                left: '20%',
+                right: '10%',
+                bottom: '18%',
+                top: '15%'
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    data: month,
+                    splitLine: {     //网格线
+                        show: false
+                    },
+                    axisLabel: {           // 坐标轴文本标签，
+                        show: true,
+                        textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                            color: '#ffffff', //'#757677',
+                            fontFamily: "Tahoma,Arial",
+                            fontSize: '12'
+                        }
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#eee'
+                        }
+                    }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    name: '',
+                    splitLine: {     //网格线
+                        show: false
+                    },
+                    splitNumber: 5,
+                    axisLabel: {           // 坐标轴刻度，
+                        show: true,
+                        textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                            color: '#ffffff', //'#757677',
+                            fontFamily: "Tahoma,Arial",
+                            fontSize: '12'
+                        }
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    axisLine: {
+                        show:false
+                    }
+                },
+                {
+                    type: 'value',
+                    name: '',
+                    splitLine: {     //网格线
+                        show: false
+                    },
+                    splitNumber: 5,
+                    axisLabel: {           // 坐标轴刻度，
+                        show: true,
+                        textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                            color: '#ffffff', //'#757677',
+                            fontFamily: "Tahoma,Arial",
+                            fontSize: '12'
+                        }
+                    }, axisTick: {
+                        show: false
+                    },
+                    axisLine: {
+                        show:false
+                    }
+                }
+            ],
+            series: [
+                { // For shadow
+                    type: 'bar',
+                    z:3,
+                    tooltip:{
+                        show:false
+                    },
+                    itemStyle: {
+                        normal:{
+                            color:'rgba(255,255,255,0.2)',
+                            barBorderWidth:1,
+                            barBorderColor: 'rgba(0, 255, 255, 1)',
+                            label:{
+                                show:false
+                            }
+                        },
+                        emphasis:{
+                            color:'rgba(255,255,255,0.2)',
+                            barBorderWidth:1,
+                            barBorderColor: 'rgba(0, 255, 255, 1)',
+                            label:{
+                                show:false
+                            }
+                        }
+                    },
+
+                    barGap: '-100%', // 两个系列的数据重合，做背景
+                    barMaxWidth: 23,
+                    barCategoryGap: '20%',
+                    data: dataShadow,
+                    animation: false
+                },
+                {
+                    name: '离网用户数',
+                    type: 'bar',
+                    data: offnetUser,
+                    label: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    barMaxWidth: 21,
+                    itemStyle: {
+                        normal: {
+                            color: 'rgba(38,215,138,1)'
+                        }
+                    }
+                },
+                {
+                    name: '离网率',
+                    type: 'line',
+                    yAxisIndex: 1,
+                    data: offnetRate,
+                    symbolSize: 10,
+                    itemStyle: {
+                        normal: {
+                            color: '#FDD72A'
+                        }
+                    }
+                }
+            ]
+        };
+        myChart.setOption(option);
+        // 获取纵坐标最大值
+        var yMax = myChart.getModel().getComponent('yAxis').axis.scale._extent[1];
+        // 为阴影部分设置值
+        dataShadow = []; // 因为之前设置过值，这里先清空数组
+        for(var i = 0;i<rows.length;i++){
+            dataShadow.push(yMax);
+        }
+        var opt = myChart.getOption();
+        opt.series[0].data = dataShadow;
+        myChart.setOption(opt); // 重新加载图标
+    }
